@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin
 public class GroceryController {
 
     @Autowired
@@ -34,7 +36,7 @@ public class GroceryController {
      * @param pageable pageable object
      * @return Page with Grocery result
      */
-    @GetMapping("/groceries")
+    @GetMapping("/all-groceries")
     public Page<Grocery> getAllGroceries(Pageable pageable) {
         return groceryRepository.findAll(pageable);
     }
@@ -46,11 +48,23 @@ public class GroceryController {
      * @param pageable pageable object
      * @return All Grocery objects with the categroy defined as the supllied request parameter
      */
-    @GetMapping("/groceries/category")
-    public Page<Grocery> findByCategory(@RequestParam(name = "category") String category, Pageable pageable) {
-        Set<String> queryCategory = new HashSet<>();
-        queryCategory.add(category);
-        return groceryRepository.findByCategory(queryCategory, pageable);
+    @GetMapping("/groceries")
+    public Page<Grocery> findByCategory(@RequestParam(name = "category", required = false) String category, Pageable pageable) {
+        if (category != null && category.trim().length() > 0)
+            return groceryRepository.findByCategory(category, pageable);
+
+        return groceryRepository.findAll(pageable);
+    }
+
+    /**
+     * Find grocery items by the defined id.
+     *
+     * @param groceryId groceryId to search for.
+     * @return All Grocery objects with the categroy defined as the supllied request parameter
+     */
+    @GetMapping("/groceries/{groceryId}")
+    public Grocery findByCategory(@PathVariable Long groceryId) {
+        return groceryRepository.findById(groceryId).get();
     }
 
     /**
@@ -67,19 +81,18 @@ public class GroceryController {
     /**
      * Update existing Grocery object with the supplied data.
      *
-     * @param groceryId   Id for the grocery object
      * @param postRequest posted object with the Grocery data
      * @return the updated object
      */
-    @PutMapping("/groceries/{groceryId}")
-    public Grocery updatePost(@PathVariable Long groceryId, @Valid @RequestBody Grocery postRequest) {
-        return groceryRepository.findById(groceryId).map(grocery -> {
+    @PutMapping("/groceries")
+    public Grocery updatePost(@Valid @RequestBody Grocery postRequest) {
+        return groceryRepository.findById(postRequest.getId()).map(grocery -> {
 
             grocery.setItemName(postRequest.getItemName());
             grocery.setCategory(postRequest.getCategory());
 
             return groceryRepository.save(grocery);
-        }).orElseThrow(() -> new ResourceNotFoundException("Id " + groceryId + " not found"));
+        }).orElseThrow(() -> new ResourceNotFoundException("Id " + postRequest.getId() + " not found"));
     }
 
     /**

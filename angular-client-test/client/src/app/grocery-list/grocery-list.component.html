@@ -1,10 +1,94 @@
-<mat-card>
-  <mat-card-header>Grocery List</mat-card-header>
-  <mat-card-content>
-    <mat-list>
-      <mat-list-item *ngFor="let grocery of groceries">
-        <h3 mat-line>{{ grocery.itemName }}</h3>
-      </mat-list-item>
-    </mat-list>
-  </mat-card-content>
-</mat-card>
+<h3 *ngIf="groceryIdToUpdate; else create">
+  Update Grocery for Id: {{groceryIdToUpdate}}
+</h3>
+<ng-template #create>
+  <h3> Create New Grocery Item </h3>
+</ng-template>
+<div>
+  <form [formGroup]="groceryForm" (ngSubmit)="onGroceryFormSubmit()">
+    <table>
+      <tr>
+        <td>Enter Name</td>
+        <td><input formControlName="itemName">
+          <label *ngIf="groceryForm.get('itemName').invalid && processValidation" [ngClass]="'error'"> Name is
+            required. </label>
+        </td>
+      </tr>
+      <tr>
+        <td>Enter Category</td>
+        <td><input formControlName="category">
+          <label *ngIf="groceryForm.get('category').invalid && processValidation" [ngClass]="'error'"> Category is
+            required. </label>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <button *ngIf="!groceryIdToUpdate">CREATE</button>
+          <button *ngIf="groceryIdToUpdate">UPDATE</button>
+          <button (click)="backToCreateGrocery()" *ngIf="groceryIdToUpdate">Go Back</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+  <br/>
+  <form [formGroup]="groceryFormSearch" (ngSubmit)="onGroceryFormSearch()">
+    <table>
+      <tr>
+        <td>Enter Category</td>
+        <td><input formControlName="category">
+          <label *ngIf="groceryFormSearch.get('category').invalid && searchValidation" [ngClass]="'error'"> Category is
+            required. </label>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <button>SEARCH</button>
+          <button (click)="resetGroceryForm()">Reset</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+
+  <br/>
+  <div *ngIf="statusCode; else processing">
+    <div *ngIf="statusCode === 201" [ngClass]="'success'">
+      Grocery Item added successfully.
+    </div>
+    <div *ngIf="statusCode === 409" [ngClass]="'success'">
+      Grocery Item already exists.
+    </div>
+    <div *ngIf="statusCode === 200" [ngClass]="'success'">
+      Grocery Item updated successfully.
+    </div>
+    <div *ngIf="statusCode === 204" [ngClass]="'success'">
+      Grocery Item deleted successfully.
+    </div>
+    <div *ngIf="statusCode === 500" [ngClass]="'error'">
+      Internal Server Error.
+    </div>
+  </div>
+  <ng-template #processing>
+    <img *ngIf="requestProcessing" src="assets/images/loading.gif">
+  </ng-template>
+</div>
+<h3>Grocery Item Details</h3>
+<table>
+  <tr>
+    <th> Id</th>
+    <th>Title</th>
+    <th>Category</th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tr *ngFor="let grocery of allGroceries">
+    <td>{{grocery.id}}</td>
+    <td>{{grocery.itemName}}</td>
+    <td>{{grocery.category}}</td>
+    <td>
+      <button type="button" (click)="loadGroceryToEdit(grocery.id)">Edit</button>
+    </td>
+    <td>
+      <button type="button" (click)="deleteGrocery(grocery.id)">Delete</button>
+    </td>
+  </tr>
+</table>
