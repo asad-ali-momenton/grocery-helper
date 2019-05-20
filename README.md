@@ -36,37 +36,27 @@ The REST API to the example app is described below.
             {
                 "id": 1,
                 "itemName": "ToothPaste",
-                "category": [
-                    "testing"
-                ]
+                "category": "testing"
             },
             {
                 "id": 2,
                 "itemName": "Cola",
-                "category": [
-                    "testing"
-                ]
+                "category": "testing"
             },
             {
                 "id": 3,
                 "itemName": "Cereal",
-                "category": [
-                    "testing"
-                ]
+                "category": "testing"
             },
             {
                 "id": 4,
                 "itemName": "Milk",
-                "category": [
-                    "testing"
-                ]
+                "category": "testing"
             },
             {
                 "id": 5,
                 "itemName": "Honey",
-                "category": [
-                    "testing"
-                ]
+                "category": "testing"
             }
         ],
         "pageable": {
