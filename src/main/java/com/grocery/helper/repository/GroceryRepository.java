@@ -10,5 +10,5 @@ import java.util.Set;
 
 @RepositoryRestResource
 public interface GroceryRepository extends JpaRepository<Grocery, Long> {
-    Page<Grocery> findByCategory(Set<String> category, Pageable pageable);
+    Page<Grocery> findByCategory(String category, Pageable pageable);
 }

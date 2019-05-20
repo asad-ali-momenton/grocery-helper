@@ -39,10 +39,7 @@ public class GroceryControllerTest {
     public void givenGroceries_whenGetAllGroceries_thenReturnJsonArray()
             throws Exception {
 
-        Set<String> queryCategory = new HashSet<>();
-        queryCategory.add("testing");
-
-        Grocery grocery = Grocery.builder().id(Long.parseLong("1")).itemName("Paste").category(queryCategory).build();
+        Grocery grocery = Grocery.builder().id(Long.parseLong("1")).itemName("Paste").category("testing").build();
         Page<Grocery> groceryPage = new PageImpl<>(Collections.singletonList(grocery));
         given(controller.getAllGroceries(pageable)).willReturn(groceryPage);
 

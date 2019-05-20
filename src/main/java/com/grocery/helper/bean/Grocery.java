@@ -24,7 +24,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Table (name = "grocery")
+@Table(name = "grocery")
 public class Grocery {
     @Id
     @GeneratedValue
@@ -32,12 +32,10 @@ public class Grocery {
     @NonNull
     private String itemName;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private Set<String> category = new HashSet<>();
+    private String category;
 
     @Override
     public String toString() {
-        return "Grocery{" + "id=" + id + ", itemName='" + itemName + '}';
+        return "Grocery{" + "id=" + id + ", itemName='" + itemName + ", category='" + category + '}';
     }
 }
